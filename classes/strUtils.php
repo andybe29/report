@@ -1,5 +1,6 @@
 <?php
-class strUtils {
+class strUtils
+{
 	public static function assoc2plain($arr = []) {
 		return array_map(function($key, $val) { return $key . '=' . $val; }, array_keys($arr), $arr);
 	}
