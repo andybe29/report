@@ -191,6 +191,21 @@ class User
     }
 
     /**
+     * Список менеджеров
+     * @return mixed массив данных либо false в случае фейла
+     */
+    public function managers()
+    {
+        $this->sql->str = 'SELECT id, name FROM reportUsers WHERE type = ' . $this->sql->varchar(self::MANAGER);
+        $this->sql->execute();
+
+        $data = $this->sql->err ? false : $this->sql->all();
+        $this->sql->free();
+
+        return $data ? array_column($data, 'name', 'id') : $data;
+    }
+
+    /**
      * получение значения куки
      * @param string $name   название
      * @param string $remove флаг удаления куки
