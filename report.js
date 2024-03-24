@@ -14,10 +14,9 @@ $(function() {
         }
     });
 
-    settings.DATE_REGEXP = new RegExp(/^[\d]{2}.[\d]{2}.[\d]{4}$/);
-
     $('.form-control[required]').css({'background-color': '#fcf8e3'});
     $('input[readonly]').css({'background-color': '#fff'});
+    $('input:text[rel="datepicker"]').datepicker({autoClose: true, position: 'bottom right', todayButton: new Date()});
 
     $.ajaxSetup({
         url         : 'ajax.php',

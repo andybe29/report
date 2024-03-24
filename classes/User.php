@@ -114,12 +114,12 @@ class User
                 $this->type = $user['type'];
 
                 # перезапись id и токена в куки
-                self::_setCookie(self::COOKIE_ID,    $this->id, time() + self::TOKEN_TIME);
-                self::_setCookie(self::COOKIE_TOKEN, $token,    time() + self::TOKEN_TIME);
+                $this->_setCookie(self::COOKIE_ID,    $this->id, time() + self::TOKEN_TIME);
+                $this->_setCookie(self::COOKIE_TOKEN, $token,    time() + self::TOKEN_TIME);
             } else {
                 # удаление кук
-                self::_getCookie(self::COOKIE_ID,    true);
-                self::_getCookie(self::COOKIE_TOKEN, true);
+                $this->_getCookie(self::COOKIE_ID,    true);
+                $this->_getCookie(self::COOKIE_TOKEN, true);
             }
         } else {
             $result = false;
@@ -181,8 +181,8 @@ class User
         if (empty($this->id)) return false;
 
         # удаление кук
-        self::_getCookie(self::COOKIE_ID,    true);
-        self::_getCookie(self::COOKIE_TOKEN, true);
+        $this->_getCookie(self::COOKIE_ID,    true);
+        $this->_getCookie(self::COOKIE_TOKEN, true);
 
         # сброс токена
         $data = ['logged' => 'NULL', 'token' => 'NULL'];
@@ -211,11 +211,11 @@ class User
      * @param string $remove флаг удаления куки
      * @return string|null значение куки либо null в случае её отсутствия
      */
-    public static function _getCookie(string $name = '', $remove = false)
+    private function _getCookie(string $name = '', $remove = false)
     {
         if ($name and array_key_exists($name, $_COOKIE)) {
             $value = $_COOKIE[$name];
-            if ($remove) self::_setCookie($name, '', time() - 60);
+            if ($remove) $this->_setCookie($name, '', time() - 60);
             return $value;
         }
 
@@ -228,7 +228,7 @@ class User
      * @param string $value  значение
      * @param int    $expire дата / время (unix) истечения куки
      */
-    public static function _setCookie(string $name = '', $value = '', $expire = 0)
+    private function _setCookie(string $name = '', $value = '', $expire = 0)
     {
         setcookie($name, $value, $expire, '/', self::COOKIE_HOST, self::COOKIE_SECURE);
     }

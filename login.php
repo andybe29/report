@@ -30,7 +30,7 @@
             left:       0;
             height:     100%;
             width:      100%;
-            background: rgba(255, 255, 255, .8) url('/bootstrap/run.gif') 50% 50% no-repeat;
+            background: rgba(255, 255, 255, .8) url('bootstrap/run.gif') 50% 50% no-repeat;
         }
         body.loading { overflow: hidden; }
         body.loading .run { display: block; }
@@ -50,16 +50,16 @@
         <div class="card-body">
 
             <div class="form-group row mt-2 mb-2">
-                <label for="login" class="col-form-label col-1">login</label>
+                <label for="login" class="col-form-label col-1">логин</label>
                 <div class="col-3">
                     <input type="text" class="form-control" id="login">
                 </div>
-                <label for="passw" class="col-form-label col-1">passw</label>
+                <label for="passw" class="col-form-label col-1">пароль</label>
                 <div class="col-3">
                     <input type="password" class="form-control" id="passw">
                 </div>
                 <div class="col-3">
-                    <a class="btn btn-block btn-outline-primary" href="javascript:void(login())">login</a>
+                    <a class="btn btn-block btn-outline-primary" href="javascript:void(login())">войти</a>
                 </div>
             </div>
 
