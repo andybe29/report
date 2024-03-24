@@ -47,7 +47,6 @@ function logout() {
 
     $.ajax({
         data    : post,
-        url     : 'ajax.php',
         success : function(data) {
             if (data.success) {
                 location.href = 'login.php';

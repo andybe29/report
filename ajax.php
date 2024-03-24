@@ -106,26 +106,6 @@
             break;
         }
 
-        case 'readData': {
-            # чтение записи
-            $do = (User::MANAGER == $user->type);
-            $do = (isset($post['id']) and ($post['id'] = (int)$post['id']) > 0) ? $do : false;
-
-            $ret->error = $do ? null : 'Invalid parameters';
-            if ($ret->error) break;
-
-            $data = new Data($sql);
-            $value = $data->read($post['id']);
-
-            $ret->error = empty($value) ? 'Internal Server Error' : null;
-            if ($ret->error) break;
-
-            $ret = (object)$value;
-            $ret->success = true;
-
-            break;
-        }
-
         case 'updateData': {
             # обновление записи в отчёте
             $post = array_map('intval', $post);

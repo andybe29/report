@@ -26,7 +26,6 @@ function login() {
 
     $.ajax({
         data    : post,
-        url     : 'ajax.php',
         success : function(data) {
             if (data.success) {
                 location.href = 'data.php';
