@@ -11,7 +11,7 @@ function popupData(id) {
 
     let $popup = $('#data-popup');
     $popup.find('input:text, select').removeClass('is-invalid').siblings('.invalid-feedback').remove();
-    $popup.find('h5.modal-title').text((settings.id ? 'редактировать' : 'добавить') + ' запись');
+    $popup.find('h5.modal-title').text((id ? 'редактировать' : 'добавить') + ' запись');
 
     $('#data-popup-place').prop('disabled', (id > 0)).find('option:first').prop('selected', true);
     $('#data-popup-date').val(moment(Date.now()).format('DD.MM.YYYY'));
