@@ -138,8 +138,8 @@ function showData() {
 
     let post = Object.create(null);
     post.method = 'showData';
-    post.month = $period.data('month');
-    post.year  = $period.data('year');
+    post.month  = $period.data('month');
+    post.year   = $period.data('year');
 
     settings.loading = true;
 

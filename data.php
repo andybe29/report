@@ -58,7 +58,10 @@
         <span class="navbar-brand">report</span>
         <span class="navbar-text"><?php echo $user->name; ?> (<?php echo $user->type; ?>)</span>
 <?php
-    if (User::MANAGER == $user->type) {
+    if (User::ADMINISTRATOR == $user->type) {
+        $monYears = $data->monYears(0);
+        $managers = $user->managers();
+    } else if (User::MANAGER == $user->type) {
         $monYears = $data->monYears($user->id);
         $places   = $place->lista($user->id);
 ?>
@@ -74,52 +77,125 @@
 
 <div class="container">
 
-<?php
-    if (User::MANAGER == $user->type) {
-?>
-    <div class="card mb-2 mt-2" id="data-period">
+    <div class="card mb-2 mt-2">
         <div class="card-body">
 
             <div class="form-group row mb-2">
-                <label for="data-period-month-year" class="col-form-label col-form-label-sm col-1">период:</label>
+                <label for="data-period-month-year" class="col-form-label col-form-label-sm col-1">период</label>
 
                 <div class="col-3">
-            <?php
+        <?php
                 if ($monYears) {
-            ?>
+        ?>
                     <select id="data-period-month-year" class="custom-select custom-select-sm">
-            <?php
+        <?php
                     foreach ($monYears as $value) {
-            ?>
+        ?>
                         <option data-year="<?php echo $value['year']; ?>" data-month="<?php echo $value['month']; ?>">
                             <?php echo $monthes[$value['month']]; ?> <?php echo $value['year']; ?>
                         </option>
-            <?php
+        <?php
                     }
-            ?>
+        ?>
                     </select>
-            <?php
+        <?php
                 } else if (false == $monYears) {
-            ?>
+        ?>
                     <div class="alert alert-danger">Internal Server Error</div>
-            <?php
+        <?php
                 } else if (empty($monYears)) {
-            ?>
+        ?>
                     <div class="alert alert-warning">нет заполненных отчётов</div>
-            <?php
+        <?php
                 }
-            ?>
+        ?>
                 </div>
 
+        <?php
+            if (User::ADMINISTRATOR == $user->type) {
+        ?>
+                <label for="data-manager" class="col-form-label col-form-label-sm col-1 text-nowrap">менеджер</label>
+
+                <div class="col-3">
+        <?php
+                if ($managers) {
+        ?>
+                    <select id="data-manager" class="custom-select custom-select-sm">
+                        <option data-id="0">все менеджеры</option>
+        <?php
+                    foreach ($managers as $id => $name) {
+        ?>
+                        <option data-id="<?php echo $id; ?>"><?php echo $name; ?></option>
+        <?php
+                    }
+        ?>
+                    </select>
+        <?php
+                } else if (false == $managers) {
+        ?>
+                    <div class="alert alert-danger">Internal Server Error</div>
+        <?php
+                } else if (empty($managers)) {
+        ?>
+                    <div class="alert alert-warning">нет назначенных менеджеров</div>
+        <?php
+                }
+        ?>
+                </div>
+
+        <?php
+            }
+        ?>
                 <div class="col-2">
                     <a class="btn btn-block btn-outline-primary btn-sm" href="javascript:void(showData())">показать</a>
                 </div>
 
+        <?php
+            if (User::ADMINISTRATOR == $user->type) {
+        ?>
+                <div class="col-2">
+                    <a class="btn btn-block btn-outline-primary btn-sm" href="javascript:void(showReport())">сводный</a>
+                </div>
+
+        <?php
+            }
+        ?>
             </div>
 
         </div>
     </div>
 
+<?php
+    if (User::ADMINISTRATOR == $user->type) {
+?>
+    <table hidden id="data-table" class="table table-bordered table-hover table-sm table-striped">
+        <thead>
+            <tr class="table-primary">
+                <th>#</th>
+                <th>дата</th>
+                <th>менеджер</th>
+                <th>точка</th>
+                <th class="text-right">выручка</th>
+            </tr>
+        </thead>
+        <tbody id="data-table-body"></tbody>
+        <tfoot id="data-table-foot"></tfoot>
+    </table>
+
+    <table hidden id="data-report" class="table table-bordered table-hover table-sm table-striped">
+        <thead>
+            <tr class="table-primary">
+                <th>#</th>
+                <th>менеджер</th>
+                <th class="text-right">выручка</th>
+            </tr>
+        </thead>
+        <tbody id="data-report-body"></tbody>
+        <tfoot id="data-report-foot"></tfoot>
+    </table>
+<?php
+    } else if (User::MANAGER == $user->type) {
+?>
     <table id="data-table" class="table table-bordered table-hover table-sm table-striped">
         <thead>
             <tr class="table-primary">

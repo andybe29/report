@@ -174,7 +174,7 @@
             $post['manager'] = (User::ADMINISTRATOR == $user->type) ? $post['manager'] : $user->id;
 
             $data = new Data($sql);
-            $values = $data->report($post['year'], $post['month'], $post['manager']);
+            $values = $data->data($post['year'], $post['month'], $post['manager']);
 
             if (false === $values) {
                 $ret->error = 'Internal Server Error';
@@ -189,21 +189,47 @@
             $ret->error = empty($places) ? 'Internal Server Error' : null;
             if ($ret->error) break;
 
-            if (User::ADMINISTRATOR == $user->type) {
-                $managers = $user->managers();
-
-                $ret->error = empty($managers) ? 'Internal Server Error' : null;
-            } else {
+            if (User::MANAGER == $user->type) {
                 array_walk($values, function(&$value) { unset($value['manager']); });
             }
-            if ($ret->error) break;
 
             $ret->success = true;
             $ret->values  = $values;
             $ret->places  = array_combine(array_column($places, 'id'), array_column($places, 'address'));
-            if (User::ADMINISTRATOR == $user->type) {
-                $ret->managers = $managers;
+
+            break;
+        }
+
+        case 'showReport': {
+            # вывод сводного отчёта
+            $post = array_map('intval', $post);
+
+            $do = (User::ADMINISTRATOR == $user->type);
+            foreach (['month', 'year'] as $key) {
+                if (false === ($do = isset($post[$key]) ? $do : false)) continue;
+
+                if ('month' == $key) {
+                    $do = ($post[$key] > 0 and $post[$key] <= 12);
+                } else if ('year' == $key) {
+                    $do = ($post[$key] > 0);
+                }
             }
+
+            $ret->error = $do ? null : 'Invalid parameters';
+            if ($ret->error) break;
+
+            $data = new Data($sql);
+            $values = $data->report($post['year'], $post['month']);
+
+            if (false === $values) {
+                $ret->error = 'Internal Server Error';
+            } else if (empty($values)) {
+                $ret->success = true;
+            }
+            if ($ret->error or $ret->success) break;
+
+            $ret->success = true;
+            $ret->values  = $values;
 
             break;
         }

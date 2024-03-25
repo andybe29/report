@@ -124,7 +124,7 @@ class Data
      * @param int $manager если требуется фильтр по менеджеру
      * @return mixed массив данных либо false в случае фейла
      */
-    public function report(int $year = 0, int $month = 0, int $manager = 0)
+    public function data(int $year = 0, int $month = 0, int $manager = 0)
     {
         if ($year < 0 or $month < 0 or $month > 12 or $manager < 0) return false;
 
@@ -141,7 +141,7 @@ class Data
         $this->sql->str[] = 'WHERE ' . simpleMySQLi::_and($w) . ' ORDER BY reportData.date, reportData.place';
         $this->sql->execute();
 
-        $data = $this->sql->rows ? $this->sql->all() : false;
+        $data = $this->sql->err ? false : ($this->sql->rows ? $this->sql->all() : []);
         $this->sql->free();
 
         if ($data) {
@@ -150,6 +150,40 @@ class Data
                     foreach ($record as $key => $value) {
                         $record[$key] = ('date' == $key) ? strtotime($value) : (int)$value;
                     }
+                }
+            );
+        }
+
+        return $data;
+    }
+
+    /**
+     * сводный отчёт за месяц/год
+     * @param int $year    год
+     * @param int $month   номер месяца
+     * @return mixed массив данных либо false в случае фейла
+     */
+    public function report(int $year = 0, int $month = 0)
+    {
+        if ($year < 0 or $month < 0 or $month > 12) return false;
+
+        $w   = [];
+        $w[] = 'YEAR(reportData.date) = ' . $year;
+        $w[] = 'MONTH(reportData.date) = ' . $month;
+        $w[] = 'reportData.place = reportPlaces.id';
+
+        $this->sql->str   = [];
+        $this->sql->str[] = 'SELECT reportPlaces.manager, SUM(reportData.amount) as amount FROM reportData, reportPlaces';
+        $this->sql->str[] = 'WHERE ' . simpleMySQLi::_and($w) . ' GROUP BY reportPlaces.manager';
+        $this->sql->execute();
+
+        $data = $this->sql->err ? false : ($this->sql->rows ? $this->sql->all() : []);
+        $this->sql->free();
+
+        if ($data) {
+            array_walk(
+                $data, function(&$record) {
+                    $record = array_map('intval', $record);
                 }
             );
         }
