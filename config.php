@@ -1,13 +1,13 @@
 <?php
     mb_internal_encoding('utf-8');
 
-	# доступ к БД
+    # доступ к БД
     $db = [
-		'username' => '',
-		'passwd'   => '',
-		'dbname'   => '',
-		'host'     => ''
-	];
+        'username' => '',
+        'passwd'   => '',
+        'dbname'   => '',
+        'host'     => ''
+    ];
 
     function __autoload($classname)
     {
